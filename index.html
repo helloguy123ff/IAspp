@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exemplo de IA em HTML</title>
+</head>
+<body>
+    <div id="output"></div>
+
+    <script>
+        // Função para exibir informações extraídas do HTML
+        function exibirInformacoes() {
+            // Seleciona o elemento 'title' e obtém seu conteúdo
+            var title = document.querySelector("title").textContent;
+            
+            // Seleciona o elemento 'meta' com o atributo 'name' igual a 'description' e obtém o conteúdo do atributo 'content'
+            var description = document.querySelector("meta[name='description']").getAttribute("content");
+            
+            // Seleciona o elemento 'meta' com o atributo 'name' igual a 'keywords' e obtém o conteúdo do atributo 'content'
+            var keywords = document.querySelector("meta[name='keywords']").getAttribute("content").split(",");
+            
+            // Seleciona o elemento 'meta' com o atributo 'property' igual a 'og:image' e obtém o conteúdo do atributo 'content'
+            var imageUrl = document.querySelector("meta[property='og:image']").getAttribute("content");
+            
+            // Exibe as informações na página
+            var outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "<h1>Título: " + title + "</h1>";
+            outputDiv.innerHTML += "<p>Descrição: " + description + "</p>";
+            outputDiv.innerHTML += "<p>Palavras-chave: " + keywords.join(", ") + "</p>";
+            outputDiv.innerHTML += "<img src='" + imageUrl + "' alt='Imagem' />";
+        }
+
+        // Chama a função ao carregar a página
+        window.onload = exibirInformacoes;
+    </script>
+</body>
+</html>
