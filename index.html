@@ -1,36 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Exemplo de IA em HTML</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA de Imagens</title>
 </head>
 <body>
+    <h1>IA de Imagens</h1>
+    <input type="file" id="inputImage" accept="image/*">
+    <button onclick="processarImagem()">Processar Imagem</button>
     <div id="output"></div>
 
     <script>
-        // Função para exibir informações extraídas do HTML
-        function exibirInformacoes() {
-            // Seleciona o elemento 'title' e obtém seu conteúdo
-            var title = document.querySelector("title").textContent;
-            
-            // Seleciona o elemento 'meta' com o atributo 'name' igual a 'description' e obtém o conteúdo do atributo 'content'
-            var description = document.querySelector("meta[name='description']").getAttribute("content");
-            
-            // Seleciona o elemento 'meta' com o atributo 'name' igual a 'keywords' e obtém o conteúdo do atributo 'content'
-            var keywords = document.querySelector("meta[name='keywords']").getAttribute("content").split(",");
-            
-            // Seleciona o elemento 'meta' com o atributo 'property' igual a 'og:image' e obtém o conteúdo do atributo 'content'
-            var imageUrl = document.querySelector("meta[property='og:image']").getAttribute("content");
-            
-            // Exibe as informações na página
-            var outputDiv = document.getElementById("output");
-            outputDiv.innerHTML = "<h1>Título: " + title + "</h1>";
-            outputDiv.innerHTML += "<p>Descrição: " + description + "</p>";
-            outputDiv.innerHTML += "<p>Palavras-chave: " + keywords.join(", ") + "</p>";
-            outputDiv.innerHTML += "<img src='" + imageUrl + "' alt='Imagem' />";
+        function processarImagem() {
+            var input = document.getElementById('inputImage');
+            var file = input.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = new Image();
+                    img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = this.width;
+                        canvas.height = this.height;
+                        var ctx = canvas.getContext('2d');
+                        ctx.drawImage(this, 0, 0);
+
+                        var imageData = canvas.toDataURL('image/jpeg');
+                        enviarParaAPI(imageData);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
-        // Chama a função ao carregar a página
-        window.onload = exibirInformacoes;
+        function enviarParaAPI(imageData) {
+            // Aqui você deve implementar a lógica para enviar a imagem para uma API de reconhecimento de imagem
+            // e receber os resultados de volta. Isso pode ser feito usando XMLHttpRequest ou fetch.
+
+            // Exemplo de como você poderia enviar a imagem para uma API fictícia:
+            fetch('https://sua-api-de-reconhecimento-de-imagem.com/processar', {
+                method: 'POST',
+                body: JSON.stringify({ image: imageData }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => exibirResultados(data))
+            .catch(error => console.error('Erro:', error));
+        }
+
+        function exibirResultados(resultados) {
+            // Aqui você pode processar os resultados recebidos da API e exibi-los na página
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '<h2>Resultados:</h2>';
+            outputDiv.innerHTML += '<pre>' + JSON.stringify(resultados, null, 2) + '</pre>';
+        }
     </script>
 </body>
 </html>
+
